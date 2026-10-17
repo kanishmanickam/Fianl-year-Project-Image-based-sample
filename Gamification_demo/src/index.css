@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* Import Premium Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Outfit:wght@400;600;800;900&display=swap');
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  
+  --color-cyber-dark: #0a0718;
+  --color-cyber-purple: #1e1145;
+  --color-cyber-accent-cyan: #00f0ff;
+  --color-cyber-accent-magenta: #ff00ff;
+  --color-cyber-success: #39ff14;
+  --color-cyber-warning: #ffd700;
+  
+  --animate-text-blink: text-blink 1s step-end infinite;
+  --animate-border-glow: border-glow 3s linear infinite;
+  --animate-neon-pulse: neon-pulse 2s ease-in-out infinite;
+
+  @keyframes text-blink {
+    from, to { border-color: transparent }
+    50% { border-color: currentColor }
+  }
+  @keyframes border-glow {
+    0%, 100% { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+    50% { border-color: rgba(255, 0, 255, 0.4); box-shadow: 0 0 20px rgba(255, 0, 255, 0.4); }
+  }
+  @keyframes neon-pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(0, 240, 255, 0.4)); }
+    50% { transform: scale(1.03); filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.8)); }
+  }
+}
+
+/* Custom Scrollbar for Sleek Persona Feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(10, 7, 24, 0.95);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cyber-accent-cyan);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyber-accent-magenta);
+}
+
+/* Base resets & utilities */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-cyber-dark);
+  color: #f8fafc;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  user-select: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Premium Glassmorphic Styles */
+.glass-panel {
+  background: rgba(15, 10, 30, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(0, 240, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel-magenta {
+  background: rgba(25, 8, 35, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 0, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Custom animations and styling utilities */
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+}
+
+.glow-text-magenta {
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
+}
+
+/* Typing animation character container */
+.dialogue-text::after {
+  content: ' ';
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background-color: var(--color-cyber-accent-cyan);
+  margin-left: 4px;
+  animation: text-blink 1s step-end infinite;
+}
+
+/* 3D Canvas container styling */
+.game-canvas-container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}

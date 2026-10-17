@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberRisk — Image-Based Questionnaire</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-glow: rgba(88, 166, 255, .18);
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3d7060;
+      --amber: #9e6e2a;
+      --red: #a84040;
+      --green-fg: #7ee787;
+      --amber-fg: #e3b341;
+      --red-fg: #f85149;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 64px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      padding: 3px 14px;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+    }
+
+    .header p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+
+    /* ── Progress ── */
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--surface2);
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 100px;
+      transition: width .4s ease;
+    }
+
+    /* ── Question ── */
+    .question-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 24px;
+    }
+
+    /* ── Image Grid ── */
+    .img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 580px) {
+      .img-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .img-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--surface2);
+      transition: border-color .2s, box-shadow .2s, transform .15s;
+      position: relative;
+    }
+
+    .img-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .img-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+
+    .img-card img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .img-card-footer {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+
+    .img-card.selected .badge {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .img-card-label {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    /* ── Nav Buttons ── */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 22px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s, transform .1s;
+    }
+
+    .btn:active {
+      transform: scale(.97);
+    }
+
+    .btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:not(:disabled):hover {
+      opacity: .88;
+    }
+
+    /* ── Thank You Screen ── */
+    .thankyou {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .thankyou .icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+    }
+
+    .thankyou h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .thankyou p {
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 15px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Score Gauge ── */
+    .gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 8px 0 28px;
+    }
+
+    .gauge-svg {
+      width: 220px;
+      max-width: 100%;
+    }
+
+    .gauge-score {
+      font-size: 36px;
+      font-weight: 700;
+      text-anchor: middle;
+    }
+
+    .gauge-label {
+      font-size: 13px;
+      fill: var(--muted);
+      text-anchor: middle;
+    }
+
+    /* ── Risk Pill ── */
+    .risk-pill {
+      display: inline-block;
+      padding: 4px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .risk-low {
+      background: rgba(61, 112, 96, .25);
+      color: var(--green-fg);
+      border: 1px solid var(--green);
+    }
+
+    .risk-mod {
+      background: rgba(158, 110, 42, .25);
+      color: var(--amber-fg);
+      border: 1px solid var(--amber);
+    }
+
+    .risk-high {
+      background: rgba(168, 64, 64, .25);
+      color: var(--red-fg);
+      border: 1px solid var(--red);
+    }
+
+    /* ── Summary Detail ── */
+    .summary-section {
+      text-align: left;
+      margin-top: 24px;
+    }
+
+    .summary-section h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 11px;
+    }
+
+    .factor-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .factor-pill {
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .fp-protect {
+      background: rgba(61, 112, 96, .25);
+      color: var(--green-fg);
+      border: 1px solid var(--green);
+    }
+
+    .fp-risk {
+      background: rgba(168, 64, 64, .25);
+      color: var(--red-fg);
+      border: 1px solid var(--red);
+    }
+
+    .q-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .q-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .q-item-tag {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 100px;
+      padding: 3px 10px;
+      white-space: nowrap;
+    }
+
+    .tag-protect {
+      background: rgba(61, 112, 96, .25);
+      color: var(--green-fg);
+      border: 1px solid var(--green);
+    }
+
+    .tag-risk {
+      background: rgba(168, 64, 64, .25);
+      color: var(--red-fg);
+      border: 1px solid var(--red);
+    }
+
+    .q-item-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .q-item-text strong {
+      color: var(--text);
+    }
+
+    .profile-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    /* ── Hidden ── */
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-badge">Image-Based Questionnaire</div>
+      <h1>CyberRisk Assessment</h1>
+      <p>Select the image that best represents your preference or behaviour.</p>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="screen-quiz" class="card">
+      <div class="progress-info">
+        <span id="prog-text">Question 1 of 5</span>
+        <span id="prog-pct">20%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog-fill" style="width:20%"></div>
+      </div>
+
+      <div class="question-label" id="q-trait"></div>
+      <div class="question-text" id="q-text"></div>
+
+      <div class="img-grid">
+        <div class="img-card" id="card-a" onclick="select('A')">
+          <img id="img-a" src="" alt="" />
+          <div class="img-card-footer">
+            <div class="badge" id="badge-a">A</div>
+            <div class="img-card-label" id="label-a"></div>
+          </div>
+        </div>
+        <div class="img-card" id="card-b" onclick="select('B')">
+          <img id="img-b" src="" alt="" />
+          <div class="img-card-footer">
+            <div class="badge" id="badge-b">B</div>
+            <div class="img-card-label" id="label-b"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn-secondary" id="btn-prev" onclick="prevQ()">&#8592; Previous</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQ()" disabled>Next &#8594;</button>
+        <button class="btn btn-primary" id="btn-submit" onclick="submitAll()" hidden disabled>Submit Responses</button>
+      </div>
+    </div>
+
+    <!-- Thank You Screen -->
+    <div id="screen-thanks" class="card thankyou" hidden>
+      <div class="icon">&#9989;</div>
+      <h2>Thank you for participating!</h2>
+      <p>Your responses have been recorded.</p>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="restart()">&#8635; Restart Demo</button>
+        <button class="btn btn-primary" onclick="showSummary()">View Sample Model Summary</button>
+      </div>
+    </div>
+
+    <!-- Summary Screen -->
+    <div id="screen-summary" class="card" hidden>
+      <!-- Gauge inserted here by JS -->
+      <div id="gauge-container" class="gauge-wrap"></div>
+      <div style="text-align:center">
+        <div id="risk-pill" class="risk-pill"></div>
+        <div class="profile-text" id="profile-text" style="max-width:540px;margin:0 auto 0;"></div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="summary-section">
+        <h3>Disposition Breakdown</h3>
+        <div class="factor-pills" id="factor-pills"></div>
+      </div>
+
+      <div class="summary-section">
+        <h3>Per-Question Analysis</h3>
+        <div class="q-breakdown" id="q-breakdown"></div>
+      </div>
+
+      <hr class="divider" />
+      <div class="btn-row" style="justify-content:flex-start">
+        <button class="btn btn-secondary" onclick="restart()">&#8635; Restart Demo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      {
+        id: "IMG_01",
+        trait: "Conscientiousness — Device Security",
+        text: "You finish your lunch break and a colleague asks you to help them in another room for a few minutes. Looking at the two scenes below, which better matches what your workstation would look like after you step away?",
+        options: {
+          A: { img: "/images/q1a.png", label: "Lock screen active — computer secured", riskType: "protect" },
+          B: { img: "/images/q1b.png", label: "Screen still active — desktop accessible", riskType: "risk" }
+        }
+      },
+      {
+        id: "IMG_02",
+        trait: "Conscientiousness — Password Hygiene",
+        text: "You are creating a new account on a university portal. The site allows up to 30 characters and shows a password strength indicator. Which of the following best reflects the kind of password you would create?",
+        options: {
+          A: { img: "/images/q2a.png", label: "Meets minimum requirements (8 chars)", riskType: "risk" },
+          B: { img: "/images/q2b.png", label: "Strong — exceeds minimum length", riskType: "protect" }
+        }
+      },
+      {
+        id: "IMG_03",
+        trait: "Agreeableness — Online Information Disclosure",
+        text: "You want to try a new online service offering free content. Before accessing it, you see a registration screen. Which of the following registration forms would you be more comfortable completing?",
+        options: {
+          A: { img: "/images/q3a.png", label: "Minimal form — email and password only", riskType: "protect" },
+          B: { img: "/images/q3b.png", label: "Full form — name, phone, address, DOB", riskType: "risk" }
+        }
+      },
+      {
+        id: "IMG_04",
+        trait: "Extraversion — Sociability",
+        text: "Is outgoing, sociable.",
+        options: {
+          A: { img: "/images/q4a.png", label: "Comfortable in group conversation", riskType: "risk" },
+          B: { img: "/images/q4b.png", label: "Enjoying quiet independent activity", riskType: "protect" }
+        }
+      },
+      {
+        id: "IMG_05",
+        trait: "Openness — Aesthetic Interests",
+        text: "Values artistic, aesthetic experiences.",
+        options: {
+          A: { img: "/images/q5a.png", label: "Engaging with art or an exhibition", riskType: "protect" },
+          B: { img: "/images/q5b.png", label: "Everyday leisure activity at home", riskType: "protect" }
+        }
+      },
+      {
+        id: "IMG_06",
+        trait: "Neuroticism — Tension",
+        text: "Under demanding situations or tight deadlines, I tend to feel tense and stressed.",
+        options: {
+          A: { img: "/images/q6a.png", label: "Calm and relaxed under pressure", riskType: "protect" },
+          B: { img: "/images/q6b.png", label: "Noticeably tense and strained in demanding moments", riskType: "risk" }
+        }
+      },
+      {
+        id: "IMG_07",
+        trait: "Extraversion — Enthusiasm",
+        text: "When interacting in a group or team, I bring a lot of energy and enthusiasm.",
+        options: {
+          A: { img: "/images/q7a.png", label: "Visibly energetic and animated with others", riskType: "risk" },
+          B: { img: "/images/q7b.png", label: "Quiet and reserved in group settings", riskType: "protect" }
+        }
+      },
+      {
+        id: "IMG_08",
+        trait: "Neuroticism — Worry",
+        text: "I often find myself worrying about things that could go wrong.",
+        options: {
+          A: { img: "/images/q8a.png", label: "Generally calm and untroubled", riskType: "protect" },
+          B: { img: "/images/q8b.png", label: "Often preoccupied with concerns and doubts", riskType: "risk" }
+        }
+      },
+      {
+        id: "IMG_09",
+        trait: "Neuroticism — Moodiness",
+        text: "My mood and energy levels tend to change noticeably throughout the day.",
+        options: {
+          A: { img: "/images/q9a.png", label: "Consistent, stable demeanour day to day", riskType: "protect" },
+          B: { img: "/images/q9b.png", label: "Mood shifts noticeably throughout the day", riskType: "risk" }
+        }
+      },
+      {
+        id: "IMG_10",
+        trait: "Neuroticism — Nervousness",
+        text: "I easily feel nervous or hesitant when entering unfamiliar social situations.",
+        options: {
+          A: { img: "/images/q10a.png", label: "Confident and composed in social situations", riskType: "protect" },
+          B: { img: "/images/q10b.png", label: "Nervous or hesitant in unfamiliar social settings", riskType: "risk" }
+        }
+      },
+      {
+        id: "IMG_11",
+        trait: "Openness — Problem-Solving Approach",
+        text: "You and your team are assigned a complex technical challenge with multiple possible solutions. Which working approach feels more natural to you?",
+        options: {
+          A: { img: "/images/q11a.png", label: "Brainstorming creative, out-of-the-box ideas and novel designs", riskType: "protect" },
+          B: { img: "/images/q11b.png", label: "Following a structured step-by-step methodology and verified workflow", riskType: "protect" }
+        }
+      },
+      {
+        id: "IMG_12",
+        trait: "Openness — Technical Work Style",
+        text: "You have dedicated lab or workshop time to collaborate on a new project. Which environment would you be more eager to dive into?",
+        options: {
+          A: { img: "/images/q12a.png", label: "Working on imaginative digital design, concept art, and visual models", riskType: "protect" },
+          B: { img: "/images/q12b.png", label: "Assembling and configuring physical hardware, cables, and lab equipment", riskType: "protect" }
+        }
+      }
+    ];
+
+    const SESSION_ID = crypto.randomUUID();
+    let current = 0;
+    let answers = {}; // { IMG_01: "A", ... }
+
+    function render() {
+      const q = QUESTIONS[current];
+      const total = QUESTIONS.length;
+      const pct = Math.round(((current + 1) / total) * 100);
+
+      document.getElementById('prog-text').textContent = `Question ${current + 1} of ${total}`;
+      document.getElementById('prog-pct').textContent = `${pct}%`;
+      document.getElementById('prog-fill').style.width = pct + '%';
+
+      document.getElementById('q-trait').textContent = q.trait;
+      document.getElementById('q-text').textContent = q.text;
+
+      const imgA = document.getElementById('img-a');
+      imgA.style.display = 'block';
+      imgA.src = q.options.A.img;
+      imgA.alt = q.options.A.label;
+      document.getElementById('label-a').textContent = q.options.A.label;
+
+      const imgB = document.getElementById('img-b');
+      imgB.style.display = 'block';
+      imgB.src = q.options.B.img;
+      imgB.alt = q.options.B.label;
+      document.getElementById('label-b').textContent = q.options.B.label;
+
+      const sel = answers[q.id] || null;
+      document.getElementById('card-a').classList.toggle('selected', sel === 'A');
+      document.getElementById('card-b').classList.toggle('selected', sel === 'B');
+
+      const hasAnswer = !!sel;
+      const isLast = current === total - 1;
+      const allDone = Object.keys(answers).length === total;
+
+      document.getElementById('btn-prev').hidden = current === 0;
+      document.getElementById('btn-next').hidden = isLast;
+      document.getElementById('btn-next').disabled = !hasAnswer;
+      document.getElementById('btn-submit').hidden = !isLast;
+      document.getElementById('btn-submit').disabled = !allDone;
+    }
+
+    function select(opt) {
+      answers[QUESTIONS[current].id] = opt;
+      render();
+    }
+
+    function nextQ() { if (current < QUESTIONS.length - 1) { current++; render(); } }
+    function prevQ() { if (current > 0) { current--; render(); } }
+
+    async function submitAll() {
+      const payload = {
+        session_id: SESSION_ID,
+        answers: Object.entries(answers).map(([qid, opt]) => ({
+          question_id: qid,
+          selected_option: opt
+        }))
+      };
+      try {
+        await fetch('/api/image-submissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (e) { /* local demo — proceed even if fetch fails */ }
+
+      document.getElementById('screen-quiz').hidden = true;
+      document.getElementById('screen-thanks').hidden = false;
+    }
+
+    function restart() {
+      current = 0;
+      answers = {};
+      document.getElementById('screen-quiz').hidden = false;
+      document.getElementById('screen-thanks').hidden = true;
+      document.getElementById('screen-summary').hidden = true;
+      render();
+    }
+
+    // ── Score computation ──────────────────────────────────────────────────────
+    function computeScore() {
+      let riskCount = 0;
+      QUESTIONS.forEach(q => {
+        const sel = answers[q.id];
+        if (sel && q.options[sel].riskType === 'risk') riskCount++;
+      });
+      const ratio = riskCount / QUESTIONS.length;
+      if (ratio <= 0.3) return { score: Math.round(20 + ratio * 50), level: 'low', riskCount };
+      if (ratio <= 0.6) return { score: Math.round(45 + (ratio - 0.3) * 60), level: 'moderate', riskCount };
+      return { score: Math.min(95, Math.round(65 + (ratio - 0.6) * 75)), level: 'high', riskCount };
+    }
+
+    function showSummary() {
+      document.getElementById('screen-thanks').hidden = true;
+      document.getElementById('screen-summary').hidden = false;
+
+      const { score, level, riskCount } = computeScore();
+      const protCount = QUESTIONS.length - riskCount;
+
+      // Gauge
+      const clr = level === 'low' ? '#3d7060' : level === 'moderate' ? '#9e6e2a' : '#a84040';
+      const gcont = document.getElementById('gauge-container');
+      const angle = (score / 100) * 180; // 0-180 degrees
+      const rad = angle * Math.PI / 180;
+      const cx = 110, cy = 90, r = 70;
+      const x = cx + r * Math.cos(Math.PI - rad);
+      const y = cy - r * Math.sin(Math.PI - rad);
+      gcont.innerHTML = `
+    <svg class="gauge-svg" viewBox="0 0 220 110">
+      <path d="M 40 90 A 70 70 0 0 1 180 90" fill="none" stroke="#21262d" stroke-width="14" stroke-linecap="round"/>
+      <path d="M 40 90 A 70 70 0 0 1 ${x.toFixed(2)} ${y.toFixed(2)}" fill="none" stroke="${clr}" stroke-width="14" stroke-linecap="round" style="transition:stroke-dashoffset 1s ease"/>
+      <text x="110" y="80" class="gauge-score" fill="${clr}" font-family="Inter,sans-serif" font-size="32" font-weight="700" text-anchor="middle">${score}</text>
+      <text x="110" y="100" class="gauge-label" fill="#8b949e" font-family="Inter,sans-serif" font-size="13" text-anchor="middle">Score / 100</text>
+    </svg>`;
+
+      // Risk pill
+      const pill = document.getElementById('risk-pill');
+      pill.textContent = level === 'low' ? 'Low Risk' : level === 'moderate' ? 'Moderate Risk' : 'High Risk';
+      pill.className = 'risk-pill ' + (level === 'low' ? 'risk-low' : level === 'moderate' ? 'risk-mod' : 'risk-high');
+
+      // Profile text
+      const profiles = {
+        low: "Your choices indicate a generally cautious and risk-aware disposition. You demonstrate protective behaviours in device security and information disclosure, which are associated with lower cyber vulnerability.",
+        moderate: "Your responses reflect a mixed security posture. Some protective habits are present, but certain choices suggest areas where cyber risk awareness could be strengthened.",
+        high: "Your preferences suggest several behaviours commonly associated with elevated cyber vulnerability. Greater awareness around device security, password hygiene, and information sharing could significantly reduce risk exposure."
+      };
+      document.getElementById('profile-text').textContent = profiles[level];
+
+      // Factor pills
+      document.getElementById('factor-pills').innerHTML = `
+    <div class="factor-pill fp-protect">&#128737; ${protCount} Protective Factor${protCount !== 1 ? 's' : ''}</div>
+    <div class="factor-pill fp-risk">&#9888;&#65039; ${riskCount} Elevated Risk Factor${riskCount !== 1 ? 's' : ''}</div>
+  `;
+
+      // Per-question breakdown
+      const bd = document.getElementById('q-breakdown');
+      bd.innerHTML = '';
+      QUESTIONS.forEach(q => {
+        const sel = answers[q.id];
+        const opt = q.options[sel];
+        const isRisk = opt.riskType === 'risk';
+        bd.innerHTML += `
+      <div class="q-item">
+        <span class="q-item-tag ${isRisk ? 'tag-risk' : 'tag-protect'}">${isRisk ? '⚠ Elevated Risk' : '&#128737; Protective'}</span>
+        <div class="q-item-text"><strong>${q.id}</strong> · Option ${sel} — ${opt.label}</div>
+      </div>`;
+      });
+    }
+
+    // Init
+    render();
+  </script>
+</body>
+
+</html>

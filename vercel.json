@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd Gamification_demo && npm install && npm run build",
+  "outputDirectory": "Gamification_demo/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
