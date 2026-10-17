@@ -1,8 +1,5 @@
 // imageQuestions.ts — 12 approved image-based questions
-// Source: Questionnaire_Draft.xlsx > Question mapping sheet
-// Q1-3: Scenario-based rewrites (same construct preserved)
-// Q4-5: Original items UNCHANGED
-// Q6-12: New items from Excel image-based mapping
+// Formulated as neutral, balanced questions with scenario context where applicable.
 
 export type OptionId = 'A' | 'B';
 
@@ -16,18 +13,18 @@ export interface ImageOption {
 export interface ImageQuestion {
     id: string;
     trait: string;
-    question: string;          // original item wording (Excel)
-    scenario?: string;         // scenario context shown above cards (Q1-3 only)
+    question: string;          // Neutral question wording
+    scenario?: string;         // Optional scenario context shown above cards
     options: [ImageOption, ImageOption];
 }
 
 export const IMAGE_QUESTIONS: ImageQuestion[] = [
-    // ── Q1: Device Securement ────────────────────────────────────────────────
+    // ── Q1: Device Security (Scenario) ───────────────────────────────────────
     {
         id: 'IMG_01',
         trait: 'Conscientiousness — Device Security',
-        question: "My screen automatically locks if I don't use it for a prolonged period.",
-        scenario: "You finish your lunch break and a colleague asks you to help them in another room for a few minutes. Looking at the two scenes below, which better matches what your workstation would look like after you step away?",
+        question: 'When you step away from your workstation for a few minutes, what does your screen look like?',
+        scenario: 'You finish your lunch break and a colleague asks you to help them in another room for a few minutes. Which scene better matches what your workstation looks like after you step away?',
         options: [
             {
                 id: 'A',
@@ -44,34 +41,34 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
         ],
     },
 
-    // ── Q2: Password Strength ────────────────────────────────────────────────
+    // ── Q2: Password Hygiene (Scenario) ──────────────────────────────────────
     {
         id: 'IMG_02',
         trait: 'Conscientiousness — Password Hygiene',
-        question: "If an account allows it, I use a password beyond the site's minimum requirements.",
-        scenario: "You are creating a new account on a university portal. The site allows up to 30 characters and shows a password strength indicator. Which of the following best reflects the kind of password you would create?",
+        question: 'What type of password do you typically create when signing up for a new account?',
+        scenario: 'You are creating a new account on a university portal that allows up to 30 characters and shows a password strength meter. Which reflects the type of password you would create?',
         options: [
             {
                 id: 'A',
-                label: 'Meets minimum requirements',
+                label: 'Meets minimum requirements (8 chars)',
                 imageUrl: '/images/questionnaire/q2a.png',
                 construct: 'Conscientiousness: minimal password hygiene',
             },
             {
                 id: 'B',
-                label: 'Strong — exceeds minimum length',
+                label: 'Strong — exceeds minimum requirements',
                 imageUrl: '/images/questionnaire/q2b.png',
                 construct: 'Conscientiousness: strong password hygiene',
             },
         ],
     },
 
-    // ── Q3: Online Information Disclosure ────────────────────────────────────
+    // ── Q3: Online Information Disclosure (Scenario) ─────────────────────────
     {
         id: 'IMG_03',
         trait: 'Agreeableness — Online Information Disclosure',
-        question: 'Entering personal information during website registration or when shopping online.',
-        scenario: "You want to try a new online service offering free content. Before accessing it, you see a registration screen. Which of the following registration forms would you be more comfortable completing?",
+        question: 'When registering for a new online service, which type of form do you prefer to complete?',
+        scenario: 'You want to try a new online service offering free content. Before accessing it, you see a registration screen. Which form would you be more comfortable completing?',
         options: [
             {
                 id: 'A',
@@ -81,49 +78,49 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
             },
             {
                 id: 'B',
-                label: 'Full form — name, phone, address, DOB',
+                label: 'Full profile — name, phone, address, and DOB',
                 imageUrl: '/images/questionnaire/q3b.png',
                 construct: 'Agreeableness: willing disclosure',
             },
         ],
     },
 
-    // ── Q4: Extraversion — UNCHANGED ─────────────────────────────────────────
+    // ── Q4: Sociability (Psychology) ─────────────────────────────────────────
     {
         id: 'IMG_04',
         trait: 'Extraversion — Sociability',
-        question: 'Is outgoing, sociable.',
+        question: 'Which social setting best reflects how you prefer to spend your time?',
         options: [
             {
                 id: 'A',
-                label: 'Comfortable in group conversation',
+                label: 'Engaging in lively group conversation',
                 imageUrl: '/images/questionnaire/q4a.png',
                 construct: 'Extraversion: high sociability',
             },
             {
                 id: 'B',
-                label: 'Enjoying quiet independent activity',
+                label: 'Enjoying quiet, independent activity',
                 imageUrl: '/images/questionnaire/q4b.png',
                 construct: 'Introversion: low sociability',
             },
         ],
     },
 
-    // ── Q5: Openness — UNCHANGED ──────────────────────────────────────────────
+    // ── Q5: Aesthetic Interests (Psychology) ──────────────────────────────────
     {
         id: 'IMG_05',
         trait: 'Openness — Aesthetic Interests',
-        question: 'Values artistic, aesthetic experiences.',
+        question: 'Which type of leisure activity appeals to you more?',
         options: [
             {
                 id: 'A',
-                label: 'Engaging with art or an exhibition',
+                label: 'Visiting an art museum or cultural exhibition',
                 imageUrl: '/images/questionnaire/q5a.png',
                 construct: 'Openness: aesthetic engagement',
             },
             {
                 id: 'B',
-                label: 'Everyday leisure activity at home',
+                label: 'Relaxing with everyday leisure activities at home',
                 imageUrl: '/images/questionnaire/q5b.png',
                 construct: 'Openness: practical preference',
             },
@@ -134,7 +131,7 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
     {
         id: 'IMG_06',
         trait: 'Neuroticism — Tension',
-        question: 'Under demanding situations or tight deadlines, I tend to feel tense and stressed.',
+        question: 'How do you typically react when facing demanding deadlines or intense pressure?',
         options: [
             {
                 id: 'A',
@@ -155,7 +152,7 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
     {
         id: 'IMG_07',
         trait: 'Extraversion — Enthusiasm',
-        question: 'When interacting in a group or team, I bring a lot of energy and enthusiasm.',
+        question: 'How do you usually express yourself in team discussions or group settings?',
         options: [
             {
                 id: 'A',
@@ -176,17 +173,17 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
     {
         id: 'IMG_08',
         trait: 'Neuroticism — Worry',
-        question: 'I often find myself worrying about things that could go wrong.',
+        question: 'How often do you find yourself dwelling on potential problems or uncertainties?',
         options: [
             {
                 id: 'A',
-                label: 'Generally calm and untroubled',
+                label: 'Rarely — generally calm and untroubled',
                 imageUrl: '/images/questionnaire/q8a.png',
                 construct: 'Low Neuroticism: low worry tendency',
             },
             {
                 id: 'B',
-                label: 'Often preoccupied with concerns and doubts',
+                label: 'Frequently — often preoccupied with concerns and doubts',
                 imageUrl: '/images/questionnaire/q8b.png',
                 construct: 'Neuroticism: high worry tendency',
             },
@@ -197,7 +194,7 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
     {
         id: 'IMG_09',
         trait: 'Neuroticism — Moodiness',
-        question: 'My mood and energy levels tend to change noticeably throughout the day.',
+        question: 'How would you describe your mood and energy throughout a typical day?',
         options: [
             {
                 id: 'A',
@@ -207,7 +204,7 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
             },
             {
                 id: 'B',
-                label: 'Mood shifts noticeably throughout the day',
+                label: 'Noticeable shifts in mood and energy throughout the day',
                 imageUrl: '/images/questionnaire/q9b.png',
                 construct: 'Neuroticism: mood variability',
             },
@@ -218,7 +215,7 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
     {
         id: 'IMG_10',
         trait: 'Neuroticism — Nervousness',
-        question: 'I easily feel nervous or hesitant when entering unfamiliar social situations.',
+        question: 'How do you usually feel when entering unfamiliar social or networking environments?',
         options: [
             {
                 id: 'A',
@@ -239,7 +236,7 @@ export const IMAGE_QUESTIONS: ImageQuestion[] = [
     {
         id: 'IMG_11',
         trait: 'Openness — Problem-Solving Approach',
-        question: 'How do you prefer to approach a complex technical or project challenge?',
+        question: 'When tackling a complex technical challenge, what is your preferred approach?',
         scenario: 'You and your team are assigned a complex technical challenge with multiple possible solutions. Which working approach feels more natural to you?',
         options: [
             {

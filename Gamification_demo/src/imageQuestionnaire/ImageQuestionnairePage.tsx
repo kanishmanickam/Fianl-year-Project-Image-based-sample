@@ -100,21 +100,19 @@ const QuizScreen: React.FC = () => {
                     {q.trait}
                 </p>
 
-                {/* ── Scenario panel (Q1-3 only) ── */}
+                {/* ── Scenario panel (if available) ── */}
                 {q.scenario && (
-                    <div className="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 md:p-5 mb-5">
+                    <div className="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 md:p-5 mb-4">
                         <p className="text-slate-300 font-medium text-sm leading-relaxed">
                             {q.scenario}
                         </p>
                     </div>
                 )}
 
-                {/* ── Question text (non-scenario questions) ── */}
-                {!q.scenario && (
-                    <h2 className="font-display font-bold text-lg text-white leading-snug mb-5 glow-text-cyan">
-                        "{q.question}"
-                    </h2>
-                )}
+                {/* ── Question text ── */}
+                <h2 className="font-display font-bold text-lg md:text-xl text-white leading-snug mb-5 glow-text-cyan">
+                    {q.question}
+                </h2>
 
                 {/* Caption prompt */}
                 <p className="text-[10px] uppercase tracking-widest font-black text-slate-500 mb-3">
